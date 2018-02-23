@@ -1,15 +1,21 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { NgRedux, NgReduxModule } from 'ng2-redux';
+// Redux
+import { NgRedux, NgReduxModule, DevToolsExtension } from 'ng2-redux';
 
 import { AppComponent } from './app.component';
+// Store
 import { IAppState, rootReducer, INITIAL_STATE } from './store';
+import { TodoListComponent } from './todo-list/todo-list.component';
+import { TodoDashboardComponent } from './todo-dashboard/todo-dashboard.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    TodoListComponent,
+    TodoDashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -21,7 +27,13 @@ import { IAppState, rootReducer, INITIAL_STATE } from './store';
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(ngRedux: NgRedux<IAppState>){
-    ngRedux.configureStore(rootReducer, INITIAL_STATE);
+  constructor(ngRedux: NgRedux<IAppState>, devTools: DevToolsExtension){
+
+    // Use chrome dev tools
+    var enhancers = isDevMode() ? [devTools.enhancer()] : [];
+    // Configuration of the store
+    ngRedux.configureStore(rootReducer, INITIAL_STATE, [], enhancers);
+
+
   }
  }
